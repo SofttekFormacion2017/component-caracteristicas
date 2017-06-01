@@ -1,31 +1,93 @@
-angular.module('ghr.caracteristicas', []) // Creamos este modulo para la entidad caracteristicas
+angular.module('ghr.caracteristicas', ['toastr']) // Creamos este modulo para la entidad caracteristicas
   .component('ghrCaracteristicas', { // Componente que contiene la url que indica su html
     templateUrl: '../bower_components/component-caracteristicas/caracteristicas.html',
     // El controlador de ghrcaracteristicas
-    controller($stateParams, caracteristicasFactory, $state) {
+    controller(toastr, $stateParams, caracteristicasFactory, $state) {
       const vm = this;
 
       vm.mode = $stateParams.mode;
 
+      /**
+       * Cambia al modo entre view y edit
+       * @return {[type]} [description]
+       */
+      vm.changeMode = function () {
+        var modo;
+        if ($stateParams.mode == 'view') {
+          modo = 'edit';
+        } else {
+          modo = 'view';
+        }
+        $state.go($state.current, {
+          mode: modo
+        });
+        vm.mode = $stateParams.mode;
+      };
+
+      vm.setOriginal = function (data) {
+        vm.original = angular.copy(vm.caracteristica);
+      };
+
       caracteristicasFactory.getAll().then(function onSuccess(response) {
-        vm.arraycaracteristicas = response.filter(function (caracteristica) {
-          return caracteristica.idCandidato == $stateParams.id;
+        vm.arrayCaracteristicas = response.filter(function (caracteristica) {
+          return caracteristica.idCaracteristicas == $stateParams.id;
         });
       });
 
-      vm.update = function (user) {
-        if ($stateParams.id == 0) {
-          delete $stateParams.id;
-          caracteristicasFactory.create(vm.caracteristica).then(function (caracteristica) {
-            $state.go($state.current, {
-              id: caracteristica.id
-            });
-          });
-        }
-        if (vm.form.$dirty === true) {
-          caracteristicasFactory.update(vm.caracteristica).then(function (caracteristica) {});
+      vm.updateOrCreate = function (caracteristica, formulario) {
+        if (formulario.$valid) {
+          // Update
+          if ($stateParams.id != 0) {
+            var caracteristicaModificado = {};
+            for (var i = 0; i < formulario.$$controls.length; i++) {
+              var input = formulario.$$controls[i];
+              if (input.$dirty) {
+                caracteristicaModificado[input.$name] = input.$modelValue;
+              }
+            }
+            if (formulario.$dirty) {
+              caracteristicasFactory.update(caracteristica.id, caracteristicaModificado).then(
+                function onSuccess(response) {
+                  vm.setOriginal(response);
+                  toastr.success('El caracteristica se ha actualizado correctamente.');
+                },
+                function onFailure() {
+                  toastr.error('No se ha podido realizar la operacion, por favor compruebe su conexion a internet e intentelo más tarde.');
+                }
+              );
+            } else {
+              toastr.info('No hay nada que modificar', 'Info');
+            }
+          }
+          // Create
+          else {
+            caracteristicasFactory.create(caracteristica).then(
+              function onSuccess(response) {
+                delete vm.caracteristica.id;
+                $state.go($state.current, {
+                  id: response.id,
+                  mode: 'view'
+                });
+                toastr.success('Caracteristica creado correctamente');
+              },
+              function onFailure() {
+                toastr.error('No se ha podido realizar la operacion, por favor compruebe su conexion a internet e intentelo más tarde.');
+              }
+            );
+          }
         }
       };
+
+      if ($stateParams.id != 0) {
+        caracteristicasFactory.read($stateParams.id).then(
+          function onSuccess(response) {
+            vm.setOriginal(response);
+          },
+          function onFailure() {
+            toastr.error('No se ha podido realizar la operacion, por favor compruebe su conexion a internet e intentelo más tarde.');
+          }
+        );
+      }
 
       vm.reset = function (form) {
         vm.caracteristica = angular.copy(vm.original);
@@ -39,9 +101,42 @@ angular.module('ghr.caracteristicas', []) // Creamos este modulo para la entidad
       }
     }
   })
+  .config(function (toastrConfig) { // Configura los toastr
+    angular.extend(toastrConfig, {
+      closeButton: true,
+      extendedTimeOut: 2000,
+      tapToDismiss: true
+    });
+  })
   .constant('baseUrl', 'http://localhost:3003/api/')
   .constant('caractEntidad', 'caracteristicas')
-  .factory('caracteristicasFactory', function crearcaracteristicas($http, baseUrl, caractEntidad) {
+  .factory('caracteristicasFactory', function crearcaracteristicas($http, baseUrl, caractEntidad, toastr) {
+    /**
+     * Devuelve la referencia de un candidato
+     * @param       {[type]} id [description]
+     * @constructor
+     * @return      {[type]}    [description]
+     */
+    function _getReferenceById(id) {
+      var candidato;
+      for (var i = 0; i < arrayCaracteristicas.length || candidato === undefined; i++) {
+        if (arrayCaracteristicas[i].id == id) {
+          candidato = arrayCaracteristicas[i];
+        }
+      }
+      return candidato;
+    }
+
+    /**
+     * Devuelve el índice en el arrayCaracteristicas de un candidato
+     * @param       {[type]} id [description]
+     * @constructor
+     * @return      {[type]}    [description]
+     */
+    function _getIndexById(id) {
+      return arrayCaracteristicas.indexOf(_getReferenceById(id));
+    }
+
     var serviceUrl = baseUrl + caractEntidad;
     return {
       // sistema CRUD de caracteristica
@@ -77,11 +172,11 @@ angular.module('ghr.caracteristicas', []) // Creamos este modulo para la entidad
         });
         return angular.copy(_getReferenceById(id));
       },
-      update: function update(caracteristica) {
+      update: function _update(caracteristicaModificado, id) {
         return $http({
           method: 'PATCH',
-          url: serviceUrl + '/' + caracteristica.id,
-          data: caracteristica
+          url: serviceUrl + '/' + id,
+          data: caracteristicaModificado
         }).then(function onSuccess(response) {
           return response.data;
         });
@@ -100,8 +195,8 @@ angular.module('ghr.caracteristicas', []) // Creamos este modulo para la entidad
       const vm = this;
 
       caracteristicasFactory.getAll().then(function onSuccess(response) {
-        vm.arraycaracteristicas = response;
-        vm.caracteristica = vm.arraycaracteristicas;
+        vm.arrayCaracteristicas = response;
+        vm.caracteristica = vm.arrayCaracteristicas;
       });
 
       vm.currentPage = 1;
@@ -110,25 +205,25 @@ angular.module('ghr.caracteristicas', []) // Creamos este modulo para la entidad
       };
 
       vm.maxSize = 10; // Elementos mostrados por página
-      vm.open = function (id, nombre) {
-        var modalInstance = $uibModal.open({
-          component: 'eliminarCaracteristicaModal',
-          resolve: {
-            seleccionado: function () {
-              return id;
-            }
-          }
-        });
-
-        modalInstance.result.then(function (selectedItem) {
-          vm.arraycaracteristicas = caracteristicasFactory.getAll();
-          caracteristicasFactory.delete(selectedItem).then(function () {
-            caracteristicasFactory.getAll().then(function (caracteristica) {
-              vm.arraycaracteristicas = caracteristica;
-            });
-          });
-        });
-      };
+      // vm.open = function (id, nombre) {
+      //   var modalInstance = $uibModal.open({
+      //     component: 'eliminarCaracteristicaModal',
+      //     resolve: {
+      //       seleccionado: function () {
+      //         return id;
+      //       }
+      //     }
+      //   });
+      //
+      //   modalInstance.result.then(function (selectedItem) {
+      //     vm.arrayCaracteristicas = caracteristicasFactory.getAll();
+      //     caracteristicasFactory.delete(selectedItem).then(function () {
+      //       caracteristicasFactory.getAll().then(function (caracteristica) {
+      //         vm.arrayCaracteristicas = caracteristica;
+      //       });
+      //     });
+      //   });
+      // };
     }
   })
   .run($log => {
