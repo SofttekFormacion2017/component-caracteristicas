@@ -1,20 +1,12 @@
-<div class="form-group col-md-2 col-sm-2 col-xs-2">
-    <label for="nombre">Nombre de Característica <span class="glyphicon glyphicon-asterisk"></span> :</label>
+<div class="form-group col-md-4 col-sm-5 col-xs-8" ng-class="{ 'has-error' : formulario.nombre.$invalid && !formulario.nombre.$pristine, 'has-success': !formulario.nombre.$focused && formulario.nombre.$valid}">
+    <label for="nombre">Nombre de la Caracteristica <span ng-if="$ctrl.mode === 'edit'" class="glyphicon glyphicon-asterisk"></span> :</label>
+    <input ng-if="$ctrl.mode === 'edit'" id="inputSuccess2" class="form-control has-success" name="nombre" required autofocus pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ. ]{0,}" aria-describedby="helpBlock2" ng-model="$ctrl.caracteristica.nombre" ng-focus="focus=true" ng-blur="focus=false">
+    <span ng-if="$ctrl.mode === 'view'" class="form-control">{{$ctrl.caracteristica.nombre}}</span>
 </div>
-<div class="form-group col-md-4 col-sm-4 col-xs-4">
-    <label for="tipo">Tipo de la Característica <span class="glyphicon glyphicon-asterisk"></span> :</label>
+<div class="form-group col-md-4 col-sm-5 col-xs-8" ng-class="{ 'has-error' : formulario.nombre.$invalid && !formulario.nombre.$pristine, 'has-success': !formulario.nombre.$focused && formulario.nombre.$valid}">
+    <label for="nombre">Tipo de la Caracteristica <span ng-if="$ctrl.mode === 'edit'" class="glyphicon glyphicon-asterisk"></span> :</label>
+    <input ng-if="$ctrl.mode === 'edit'" id="inputSuccess2" class="form-control has-success" name="nombre" required autofocus pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ. ]{0,}" aria-describedby="helpBlock2" ng-model="$ctrl.caracteristica.nombre" ng-focus="focus=true" ng-blur="focus=false">
+    <span ng-if="$ctrl.mode === 'view'" class="form-control">{{$ctrl.caracteristica.tipo}}</span>
 </div>
-<div class="form-group col-md-6 col-sm-6 col-xs-6">
-    <label class="oculto"><span class="glyphicon glyphicon-asterisk"></span></label>
-</div>
-<div class="formulario caracteristicas-list" ng-repeat="caracteristica in $ctrl.arrayCaracteristicas">
-  <div class="form-group col-md-10 col-sm-10 col-xs-10">
-    <input ng-if="$ctrl.mode === 'edit'" class="form-control has-success" name="tipo" required aria-describedby="helpBlock2" ng-model="caracteristica.nombre" ng-focus="focus=true" ng-blur="focus=false">
-    <span ng-if="$ctrl.mode === 'view'" class="form-control">{{caracteristica.nombre}}</span>
-  </div>
-  <div class="form-group col-md-10 col-sm-10 col-xs-10">
-    <input ng-if="$ctrl.mode === 'edit'" class="form-control has-success" name="tipo" required aria-describedby="helpBlock2" ng-model="caracteristica.tipo" ng-focus="focus=true" ng-blur="focus=false">
-    <span ng-if="$ctrl.mode === 'view'" class="form-control">{{caracteristica.tipo}}</span>
-  </div>
 </div>
 <br><br>
