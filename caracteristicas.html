@@ -1,37 +1,20 @@
-
-<form name="formulario">
-    <div class="formulario contactos-list">
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-            <label for="tipo">Tipo de Contacto <span class="glyphicon glyphicon-asterisk"></span> :</label>
-        </div>
-        <div class="form-group col-md-4 col-sm-4 col-xs-4">
-            <label for="valor">Valor del Contacto <span class="glyphicon glyphicon-asterisk"></span> :</label>
-        </div>
-        <div class="form-group col-md-6 col-sm-6 col-xs-6">
-            <label class="oculto"><span class="glyphicon glyphicon-asterisk"></span></label>
-        </div>
-    </div>
-    <div class="formulario contactos-list" ng-repeat="contacto in $ctrl.arrayContactos">
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-            <div ng-if="$ctrl.mode === 'edit'" class="btn-group" uib-dropdown>
-                <button type="button" class="btn btn-default" uib-dropdown-toggle>
-                        <span class="fa fa-{{$ctrl.mostrarIconoContacto(contacto.tipo)}}"></span>
-                        {{contacto.tipo || $ctrl.opcionesDesplegable[0].tipo}} <span class="caret"></span>
-                        <span class="sr-only">Split button!</span>
-                    </button>
-                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">
-                    <li role="menuitem" ng-repeat="opcion in $ctrl.opcionesDesplegable" value="{{opcion.tipo}}" ng-selected="contacto.tipo === opcion.tipo">
-                        <a href="#" ng-click="contacto.tipo = opcion.tipo; $ctrl.setDirty(formulario, formulario.tipo)"><span class="fa fa-{{opcion.icon}}"></span> {{opcion.tipo}}</a>
-                    </li>
-                    <input ng-hide="true" name="tipo" ng-model="contacto.tipo">
-                </ul>
-            </div>
-            <span ng-if="$ctrl.mode === 'view'" class="form-control"><span class="fa fa-{{$ctrl.mostrarIconoContacto(contacto.tipo)}}"></span> {{contacto.tipo}}</span>
-        </div>
-        <div class="form-group col-md-10 col-sm-10 col-xs-10">
-            <input ng-if="$ctrl.mode === 'edit'" class="form-control has-success" name="valor" required aria-describedby="helpBlock2" ng-model="contacto.valor" ng-focus="focus=true" ng-blur="focus=false">
-            <span ng-if="$ctrl.mode === 'view'" class="form-control">{{contacto.valor}}</span>
-        </div>
-    </div>
-</form>
+<div class="form-group col-md-2 col-sm-2 col-xs-2">
+    <label for="nombre">Nombre de Característica <span class="glyphicon glyphicon-asterisk"></span> :</label>
+</div>
+<div class="form-group col-md-4 col-sm-4 col-xs-4">
+    <label for="tipo">Tipo de la Característica <span class="glyphicon glyphicon-asterisk"></span> :</label>
+</div>
+<div class="form-group col-md-6 col-sm-6 col-xs-6">
+    <label class="oculto"><span class="glyphicon glyphicon-asterisk"></span></label>
+</div>
+<div class="formulario caracteristicas-list" ng-repeat="caracteristica in $ctrl.arrayCaracteristicas">
+  <div class="form-group col-md-10 col-sm-10 col-xs-10">
+    <input ng-if="$ctrl.mode === 'edit'" class="form-control has-success" name="tipo" required aria-describedby="helpBlock2" ng-model="caracteristica.nombre" ng-focus="focus=true" ng-blur="focus=false">
+    <span ng-if="$ctrl.mode === 'view'" class="form-control">{{caracteristica.nombre}}</span>
+  </div>
+  <div class="form-group col-md-10 col-sm-10 col-xs-10">
+    <input ng-if="$ctrl.mode === 'edit'" class="form-control has-success" name="tipo" required aria-describedby="helpBlock2" ng-model="caracteristica.tipo" ng-focus="focus=true" ng-blur="focus=false">
+    <span ng-if="$ctrl.mode === 'view'" class="form-control">{{caracteristica.tipo}}</span>
+  </div>
+</div>
 <br><br>
