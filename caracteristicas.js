@@ -8,32 +8,32 @@ angular.module('ghr.caracteristicas', []) // Creamos este modulo para la entidad
       vm.mode = $stateParams.mode;
 
       caracteristicasFactory.getAll().then(function onSuccess(response) {
-        vm.arrayCaracteristicas = response.filter(function (contacto) {
-          return contacto.idCandidato == $stateParams.id;
+        vm.arrayCaracteristicas = response.filter(function (caracteristica) {
+          return caracteristica.idCandidato == $stateParams.id;
         });
       });
 
       vm.update = function (user) {
         if ($stateParams.id == 0) {
           delete $stateParams.id;
-          caracteristicasFactory.create(vm.contacto).then(function (contacto) {
+          caracteristicasFactory.create(vm.caracteristica).then(function (caracteristica) {
             $state.go($state.current, {
-              id: contacto.id
+              id: caracteristica.id
             });
           });
         }
         if (vm.form.$dirty === true) {
-          caracteristicasFactory.update(vm.contacto).then(function (contacto) {});
+          caracteristicasFactory.update(vm.caracteristica).then(function (caracteristica) {});
         }
       };
 
       vm.reset = function (form) {
-        vm.contacto = angular.copy(vm.original);
+        vm.caracteristica = angular.copy(vm.original);
       };
       if ($stateParams.id != 0) {
         vm.original = caracteristicasFactory.read($stateParams.id).then(
-          function (contacto) {
-            vm.contacto = contacto;
+          function (caracteristica) {
+            vm.caracteristica = caracteristica;
           }
         );
       }
@@ -79,12 +79,12 @@ angular.module('ghr.caracteristicas', []) // Creamos este modulo para la entidad
       };
     }
   })
-  .constant('contBaseUrl', 'http://localhost:3003/api/')
-  .constant('contEntidad', 'caracteristicas')
-  .factory('caracteristicasFactory', function crearCaracteristicas($http, contBaseUrl, contEntidad) {
-    var serviceUrl = contBaseUrl + contEntidad;
+  .constant('caractBaseUrl', 'http://localhost:3003/api/')
+  .constant('caractEntidad', 'caracteristicas')
+  .factory('caracteristicasFactory', function crearCaracteristicas($http, caractBaseUrl, caractEntidad) {
+    var serviceUrl = caractBaseUrl + caractEntidad;
     return {
-      // sistema CRUD de contacto
+      // sistema CRUD de caracteristica
       getAll: function getAll() {
         return $http({
           method: 'GET',
@@ -96,11 +96,11 @@ angular.module('ghr.caracteristicas', []) // Creamos este modulo para la entidad
 
           });
       },
-      create: function create(contacto) {
+      create: function create(caracteristica) {
         return $http({
           method: 'POST',
           url: serviceUrl,
-          data: contacto
+          data: caracteristica
         }).then(function onSuccess(response) {
           return response.data;
         },
@@ -117,11 +117,11 @@ angular.module('ghr.caracteristicas', []) // Creamos este modulo para la entidad
         });
         return angular.copy(_getReferenceById(id));
       },
-      update: function update(contacto) {
+      update: function update(caracteristica) {
         return $http({
           method: 'PATCH',
-          url: serviceUrl + '/' + contacto.id,
-          data: contacto
+          url: serviceUrl + '/' + caracteristica.id,
+          data: caracteristica
         }).then(function onSuccess(response) {
           return response.data;
         });
@@ -148,7 +148,7 @@ angular.module('ghr.caracteristicas', []) // Creamos este modulo para la entidad
 
       caracteristicasFactory.getAll().then(function onSuccess(response) {
         vm.arrayCaracteristicas = response;
-        vm.contacto = vm.arrayCaracteristicas;
+        vm.caracteristica = vm.arrayCaracteristicas;
       });
 
       vm.currentPage = 1;
