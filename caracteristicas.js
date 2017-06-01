@@ -46,7 +46,7 @@ angular.module('ghr.caracteristicas', ['toastr']) // Creamos este modulo para la
               }
             }
             if (formulario.$dirty) {
-              caracteristicasFactory.update(caracteristica.id, caracteristicaModificado).then(
+              caracteristicasFactory.update(caracteristicaModificado, vm.caracteristica.id).then(
                 function onSuccess(response) {
                   vm.setOriginal(response);
                   toastr.success('El caracteristica se ha actualizado correctamente.');
@@ -61,7 +61,7 @@ angular.module('ghr.caracteristicas', ['toastr']) // Creamos este modulo para la
           }
           // Create
           else {
-            caracteristicasFactory.create(caracteristica).then(
+            caracteristicasFactory.create(vm.caracteristica).then(
               function onSuccess(response) {
                 delete vm.caracteristica.id;
                 $state.go($state.current, {
@@ -205,26 +205,50 @@ angular.module('ghr.caracteristicas', ['toastr']) // Creamos este modulo para la
       };
 
       vm.maxSize = 10; // Elementos mostrados por página
-      // vm.open = function (id, nombre) {
-      //   var modalInstance = $uibModal.open({
-      //     component: 'eliminarCaracteristicaModal',
-      //     resolve: {
-      //       seleccionado: function () {
-      //         return id;
-      //       }
-      //     }
-      //   });
-      //
-      //   modalInstance.result.then(function (selectedItem) {
-      //     vm.arrayCaracteristicas = caracteristicasFactory.getAll();
-      //     caracteristicasFactory.delete(selectedItem).then(function () {
-      //       caracteristicasFactory.getAll().then(function (caracteristica) {
-      //         vm.arrayCaracteristicas = caracteristica;
-      //       });
-      //     });
-      //   });
-      // };
-    }
+      vm.open = function (id, nombre) {
+        var modalInstance = $uibModal.open({
+          component: 'eliminarCaracteristicaModal',
+          resolve: {
+            seleccionado: function () {
+              return id;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+          vm.arrayCaracteristicas = caracteristicasFactory.getAll();
+          caracteristicasFactory.delete(selectedItem).then(function () {
+            caracteristicasFactory.getAll().then(function (caracteristica) {
+              vm.arrayCaracteristicas = caracteristica;
+            });
+          });
+        });
+      };
+    },
+  })
+  .component('eliminarCaracteristicaModal', { // El componente del modal
+      templateUrl: '../bower_components/component-caracteristicas/eliminarCaracteristicaModal.html',
+      bindings: {
+          resolve: '<',
+          close: '&',
+          dismiss: '&'
+      },
+      controller: function() {
+          const vm = this;
+          vm.$onInit = function() {
+              vm.selected = vm.resolve.seleccionado;
+          };
+          vm.ok = function(seleccionado) { //Este metodo nos sirve para marcar el candidato que se ha seleccionado
+              vm.close({
+                  $value: seleccionado
+              });
+          };
+          vm.cancel = function() { //Este metodo cancela la operacion
+              vm.dismiss({
+                  $value: 'cancel'
+              });
+          };
+      }
   })
   .run($log => {
     $log.log('Ejecutando Componente caracteristicas');
