@@ -1,12 +1,39 @@
-<div class="form-group col-md-4 col-sm-5 col-xs-8" ng-class="{ 'has-error' : formulario.nombre.$invalid && !formulario.nombre.$pristine, 'has-success': !formulario.nombre.$focused && formulario.nombre.$valid}">
-    <label for="nombre">Nombre de la Caracteristica <span ng-if="$ctrl.mode === 'edit'" class="glyphicon glyphicon-asterisk"></span> :</label>
-    <input ng-if="$ctrl.mode === 'edit'" id="inputSuccess2" class="form-control has-success" name="nombre" required autofocus pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ. ]{0,}" aria-describedby="helpBlock2" ng-model="$ctrl.caracteristica.nombre" ng-focus="focus=true" ng-blur="focus=false">
-    <span ng-if="$ctrl.mode === 'view'" class="form-control">{{$ctrl.caracteristica.nombre}}</span>
-</div>
-<div class="form-group col-md-4 col-sm-5 col-xs-8" ng-class="{ 'has-error' : formulario.nombre.$invalid && !formulario.nombre.$pristine, 'has-success': !formulario.nombre.$focused && formulario.nombre.$valid}">
-    <label for="nombre">Tipo de la Caracteristica <span ng-if="$ctrl.mode === 'edit'" class="glyphicon glyphicon-asterisk"></span> :</label>
-    <input ng-if="$ctrl.mode === 'edit'" id="inputSuccess2" class="form-control has-success" name="nombre" required autofocus pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ. ]{0,}" aria-describedby="helpBlock2" ng-model="$ctrl.caracteristica.nombre" ng-focus="focus=true" ng-blur="focus=false">
-    <span ng-if="$ctrl.mode === 'view'" class="form-control">{{$ctrl.caracteristica.tipo}}</span>
-</div>
+<div class="container-fluid">
+  <form name="formulario">
+      <div class="formulario">
+        <div class="form-group col-md-4 col-sm-5 col-xs-8" ng-class="{ 'has-error' : formulario.nombre.$invalid && !formulario.nombre.$pristine, 'has-success': !formulario.nombre.$focused && formulario.nombre.$valid}">
+        <label for="nombre">Nombre de la Caracteristica <span ng-if="$ctrl.mode === 'edit'" class="glyphicon glyphicon-asterisk"></span> :</label>
+        <input ng-if="$ctrl.mode === 'edit'" id="inputSuccess2" class="form-control has-success" name="nombre" required autofocus pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ. ]{0,}" aria-describedby="helpBlock2" ng-model="$ctrl.caracteristica.nombre" ng-focus="focus=true" ng-blur="focus=false">
+        <span ng-if="$ctrl.mode === 'view'" class="form-control">{{$ctrl.caracteristicas.nombre}}</span>
+      </div>
+      <div class="form-group col-md-4 col-sm-5 col-xs-8" ng-class="{ 'has-error' : formulario.tipo.$invalid && !formulario.tipo.$pristine, 'has-success': !formulario.tipo.$focused && formulario.tipo.$valid}">
+        <label for="tipo">Tipo de la Caracteristica <span ng-if="$ctrl.mode === 'edit'" class="glyphicon glyphicon-asterisk"></span> :</label>
+        <input ng-if="$ctrl.mode === 'edit'" id="inputSuccess2" class="form-control has-success" name="tipo" required autofocus pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ. ]{0,}" aria-describedby="helpBlock2" ng-model="$ctrl.caracteristica.tipo" ng-focus="focus=true" ng-blur="focus=false">
+        <span ng-if="$ctrl.mode === 'view'" class="form-control">{{$ctrl.caracteristicas.tipo}}</span>
+      </div>
+  </form>
+    <div class="form-group col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-7 col-sm-7 col-xs-6">
+            <span ng-if="$ctrl.mode === 'edit'" class="leyenda">Los campos con asterisco (<span ng-if="$ctrl.mode === 'edit'" class="glyphicon glyphicon-asterisk"></span>) son obligatorios.</span>
+        </div>
+        <div class="botonera col-md-5 col-sm-5 col-xs-6 form-group ">
+            <div ng-if="$ctrl.mode === 'edit'">
+                <button type="button" ng-click="$ctrl.changeMode()" value="Cancelar edición" class="reset btn btn-warning ">
+                    Volver <span class ="glyphicon glyphicon-ban-circle"></span>
+                </button>
+                <button type="button" ng-click="$ctrl.reset()" value="Descartar cambios" class="reset btn btn-default ">
+                    Descartar Cambios <span class ="glyphicon glyphicon-remove"></span>
+                </button>
+                <button type="submit" ng-click="$ctrl.updateOrCreate($ctrl.caracteristicas,formulario)" ng-disabled="formulario.$invalid" class="submit btn btn-primary">
+                    Guardar <span class="glyphicon glyphicon-send"></span>
+                </button>
+            </div>
+            <button ng-if="$ctrl.mode === 'view'" type="submit" ng-click="$ctrl.changeMode()" ng-disabled="formulario.$invalid " class="submit btn btn-primary">
+        Editar&nbsp;&nbsp; <span class="glyphicon glyphicon-pencil"></span></button>
+        </div>
+    </div>
+
+    </div>
+
 </div>
 <br><br>
