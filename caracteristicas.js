@@ -25,7 +25,7 @@ angular.module('ghr.caracteristicas', ['toastr']) // Creamos este modulo para la
       };
 
       vm.setOriginal = function (data) {
-        vm.original = angular.copy(vm.caracteristica);
+        vm.original = angular.copy(data);
       };
 
       caracteristicasFactory.getAll().then(function onSuccess(response) {
@@ -89,9 +89,11 @@ angular.module('ghr.caracteristicas', ['toastr']) // Creamos este modulo para la
         );
       }
 
-      vm.reset = function (form) {
+      vm.reset = function () {
         vm.caracteristica = angular.copy(vm.original);
       };
+      vm.reset();
+
       if ($stateParams.id != 0) {
         vm.original = caracteristicasFactory.read($stateParams.id).then(
           function (caracteristica) {
