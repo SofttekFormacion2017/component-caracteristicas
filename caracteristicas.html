@@ -4,7 +4,7 @@
       <div class="formulario col-md-offset-4 col-sm-offset-3 ">
         <div class="form-group col-md-7 col-sm-7 col-xs-8" ng-class="{ 'has-error' : formulario.nombre.$invalid && !formulario.nombre.$pristine, 'has-success': !formulario.nombre.$focused && formulario.nombre.$valid}">
         <label for="nombre">Nombre de la Caracteristica <span ng-if="$ctrl.mode === 'edit'" class="glyphicon glyphicon-asterisk"></span> :</label>
-        <input ng-if="$ctrl.mode === 'edit'" id="inputSuccess2" class="form-control has-success" name="nombre" required autofocus pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ. ]{0,}" aria-describedby="helpBlock2" ng-model="$ctrl.caracteristica.nombre" ng-focus="focus=true" ng-blur="focus=false">
+        <input ng-if="$ctrl.mode === 'edit'" id="inputSuccess2" class="form-control has-success" name="nombre" required autofocus  aria-describedby="helpBlock2" ng-model="$ctrl.caracteristica.nombre" ng-focus="focus=true" ng-blur="focus=false">
         <span ng-if="$ctrl.mode === 'view'" class="form-control">{{$ctrl.caracteristica.nombre}}</span>
       </div>
       <div class="form-group col-md-7 col-sm-7 col-xs-8" ng-class="{ 'has-error' : formulario.tipo.$invalid && !formulario.tipo.$pristine, 'has-success': !formulario.tipo.$focused && formulario.tipo.$valid}">
